@@ -14,9 +14,13 @@ public interface ICompetiteur {
 	
 	public long getStartTime();
 	
+	public String getStartTimeString();
+	
 	public void setStartTime(long newStartTime);
 	
 	public long getArrivalTime();
+	
+	public String getArrivalTimeString();
 	
 	public void setArrivalTime(long newArrivalTime);
 	
@@ -29,5 +33,9 @@ public interface ICompetiteur {
 	public void setStartOrder(int newStartOrder);
 	
 	public long getRunTime();
+	
+	public String getRunTimeString();
+	
+	public boolean isArrived();
 
 }

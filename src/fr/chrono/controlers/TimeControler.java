@@ -2,6 +2,7 @@ package fr.chrono.controlers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +42,9 @@ public class TimeControler {
 	}
 
 	public static String parseTimeToString(long timeLong) {
+		if(timeLong<0) {
+			return "N/A";
+		}
 		if(NO_DATE_FORMATER) {
 			long milliSeconds = timeLong%1000l;
 			timeLong -= milliSeconds;
@@ -88,6 +92,15 @@ public class TimeControler {
 			text = "0"+text;
 		}
 		return text;
+	}
+	
+	public static long getCurrentTime() {
+		long dayTime = 24l*60l*60l*1000l;
+		long currentTime = System.currentTimeMillis();
+		TimeZone zone = TimeZone.getTimeZone("Etc/GMT-2");
+		int offset = zone.getOffset(currentTime);
+		currentTime+=offset;
+		return currentTime%dayTime;
 	}
 
 }

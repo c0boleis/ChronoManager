@@ -1,27 +1,23 @@
 package fr.chrono.ihm.panels;
 
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
-import javafx.scene.layout.BorderPane;
 
 public class TabRun extends Tab{
 	
-	private SplitPane splitPane;
+	private TableRunArrivingV2 tableRunArriving;
 
 	public TabRun() {
 		this.setText("Course");
-		BorderPane borderPane = new BorderPane();
-		borderPane.setCenter(getSplitPane());
-		this.setContent(borderPane);
+		this.setContent(getTableRunArriving());
+		this.setClosable(false);
 	}
 
-	public SplitPane getSplitPane() {
-		if(splitPane == null) {
-			splitPane = new SplitPane();
-//			BorderPane borderPaneSup = new BorderPane();
-//			borderPaneSup.setCenter(getTable());
-//			splitPane.getItems().add(borderPaneSup);
+	public TableRunArrivingV2 getTableRunArriving() {
+		if(tableRunArriving == null) {
+			tableRunArriving = new TableRunArrivingV2();
 		}
-		return splitPane;
+		return tableRunArriving;
 	}
+
+
 }

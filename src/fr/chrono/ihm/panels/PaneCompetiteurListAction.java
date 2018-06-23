@@ -1,8 +1,5 @@
 package fr.chrono.ihm.panels;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import fr.chrono.controlers.CompetiteurControler;
 import fr.chrono.ihm.dialogs.ExceptionDialog;
 import fr.chrono.ihm.fields.CategoryField;

@@ -1,10 +1,11 @@
 package fr.chrono.model;
 
+import fr.chrono.controlers.TimeControler;
 import fr.chrono.model.interfaces.ICompetiteur;
 
 public class Competiteur implements ICompetiteur{
 	
-	private long arrivalTime = 0l;
+	private long arrivalTime = -1l;
 	
 	private String category = null;
 	
@@ -133,6 +134,26 @@ public class Competiteur implements ICompetiteur{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String getStartTimeString() {
+		return TimeControler.parseTimeToString(startTime);
+	}
+
+	@Override
+	public String getArrivalTimeString() {
+		return TimeControler.parseTimeToString(arrivalTime);
+	}
+
+	@Override
+	public String getRunTimeString() {
+		return TimeControler.parseTimeToString(getRunTime());
+	}
+
+	@Override
+	public boolean isArrived() {
+		return this.arrivalTime>0l;
 	}
 
 	
