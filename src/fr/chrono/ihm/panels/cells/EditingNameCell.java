@@ -1,9 +1,10 @@
 package fr.chrono.ihm.panels.cells;
 
 import fr.chrono.controlers.CompetiteurControler;
+import fr.chrono.ihm.dialogs.ExceptionDialog;
 import fr.chrono.ihm.fields.NameField;
+import fr.chrono.model.exceptions.ModelFormatException;
 import fr.chrono.model.interfaces.ICompetiteur;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableCell;
 import javafx.scene.input.KeyCode;
@@ -58,7 +59,18 @@ public class EditingNameCell extends TableCell<ICompetiteur, String> {
 	@Override
 	public void commitEdit(String newValue) {
 		ICompetiteur competiteur = (ICompetiteur) getTableRow().getItem();
-		CompetiteurControler.setName(competiteur, newValue);
+		try {
+			if(!CompetiteurControler.setName(competiteur, newValue)) {
+				cancelEdit();
+				return;
+			}
+		}catch(ModelFormatException e) {
+			ExceptionDialog dialog = new ExceptionDialog(e);
+			dialog.showAndWait();
+			cancelEdit();
+			return;
+		}
+
 		setText(newValue);
 		setGraphic(null);
 	}

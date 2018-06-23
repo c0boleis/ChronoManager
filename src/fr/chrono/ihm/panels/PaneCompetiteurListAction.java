@@ -1,14 +1,21 @@
 package fr.chrono.ihm.panels;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import fr.chrono.controlers.CompetiteurControler;
+import fr.chrono.ihm.dialogs.ExceptionDialog;
 import fr.chrono.ihm.fields.CategoryField;
+import fr.chrono.ihm.fields.NameField;
 import fr.chrono.ihm.fields.TimeField;
+import fr.chrono.model.exceptions.ModelFormatException;
 import fr.chrono.model.interfaces.ICompetiteur;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -20,7 +27,7 @@ public class PaneCompetiteurListAction extends BorderPane{
 	 */
 	private Label labelName;
 
-	private TextField textFieldName;
+	private NameField textFieldName;
 
 	private Label labelCategory;
 
@@ -81,9 +88,16 @@ public class PaneCompetiteurListAction extends BorderPane{
 	/**
 	 * @return the textFieldName
 	 */
-	private TextField getTextFieldName() {
+	private NameField getTextFieldName() {
 		if(textFieldName == null) {
-			textFieldName = new TextField();
+			textFieldName = new NameField();
+			textFieldName.textProperty().addListener(new ChangeListener<String>() {
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, 
+						String newValue) {
+					checkAddCompetiteurAvailable();
+				}
+			});
 		}
 		return textFieldName;
 	}
@@ -133,7 +147,16 @@ public class PaneCompetiteurListAction extends BorderPane{
 	private void addCompetiteur() {
 		String name = getTextFieldName().getText();
 		String category = getTextFieldCategory().getSelectedCategory();
-		ICompetiteur competiteur = CompetiteurControler.createCompetiteur(name, category);
+		ICompetiteur competiteur = null;
+		try {
+			competiteur = CompetiteurControler.createCompetiteur(name, category);
+		}catch( ModelFormatException e) {
+			e.printStackTrace();
+			ExceptionDialog alert = new ExceptionDialog(e);
+			alert.showAndWait();
+			return;
+		}
+		
 		if(competiteur == null) {
 			System.err.println("competiteur non ajouté");
 		}else {
@@ -217,6 +240,14 @@ public class PaneCompetiteurListAction extends BorderPane{
 			});
 		}
 		return buttonInitStartOrder;
+	}
+	
+	public void checkAddCompetiteurAvailable() {
+		if(getTextFieldName().nameIsRight()) {
+			getButtonAddCompetiteur().setDisable(false);
+		}else {
+			getButtonAddCompetiteur().setDisable(true);
+		}
 	}
 
 }

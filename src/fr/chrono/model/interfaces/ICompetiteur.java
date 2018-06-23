@@ -2,6 +2,8 @@ package fr.chrono.model.interfaces;
 
 public interface ICompetiteur {
 	
+	public static final String NAME_FORBIDDEN_CHAR = "[^\\w&&[^ ]&&[^/]&&[^-]]*";
+	
 	public String getName();
 
 	public void setName(String newName);

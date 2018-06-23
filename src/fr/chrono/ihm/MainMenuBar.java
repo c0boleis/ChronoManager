@@ -19,8 +19,13 @@ public class MainMenuBar extends MenuBar{
 	
 	private MenuItem menuItemClose;
 	
+	private Menu menuOptions;
+	
+	private MenuItem menuItemAPropos;
+	
 	public MainMenuBar() {
 		getMenus().add(getMenuFile());
+		getMenus().add(getMenuOptions());
 	}
 
 	/**
@@ -81,6 +86,29 @@ public class MainMenuBar extends MenuBar{
 			menuItemClose.setText("Fermer");
 		}
 		return menuItemClose;
+	}
+
+	/**
+	 * @return the menuOptions
+	 */
+	private Menu getMenuOptions() {
+		if(menuOptions == null) {
+			menuOptions = new Menu();
+			menuOptions.setText("Options");
+			menuOptions.getItems().add(getMenuItemAPropos());
+		}
+		return menuOptions;
+	}
+
+	/**
+	 * @return the menuItemAPropos
+	 */
+	private MenuItem getMenuItemAPropos() {
+		if(menuItemAPropos == null) {
+			menuItemAPropos = new MenuItem();
+			menuItemAPropos.setText("A propos");
+		}
+		return menuItemAPropos;
 	}
 
 }

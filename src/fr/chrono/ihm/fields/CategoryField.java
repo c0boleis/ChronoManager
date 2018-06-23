@@ -11,8 +11,15 @@ public class CategoryField extends ComboBox<String>{
 	public static final String STRING_NEW_CATEGORY = "...";
 	
 	private CatergoyListener catergoyListener;
+	
+	private String defaultValue;
 
 	public CategoryField() {
+		this(null);
+	}
+	
+	public CategoryField(String defaultValueIn) {
+		this.defaultValue = defaultValueIn;
 		init();
 		CategoryControler.addCatergoyListener(getCatergoyListener());
 	}
@@ -22,6 +29,12 @@ public class CategoryField extends ComboBox<String>{
 				CategoryControler.getCategories());
 		list.add(STRING_NEW_CATEGORY);
 		this.setItems(list);
+		if(defaultValue==null) {
+			defaultValue = list.get(0);
+		}
+		if(list.size()>1) {
+			this.setSelectedCategory(defaultValue);
+		}
 	}
 	
 	public String getSelectedCategory() {

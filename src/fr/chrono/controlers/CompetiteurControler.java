@@ -16,11 +16,11 @@ import fr.chrono.controlers.comparators.CompetiteurComparatorByStartOrder;
 import fr.chrono.controlers.comparators.CompetiteurComparatorByCategory;
 import fr.chrono.controlers.listeners.CompetiteurListener;
 import fr.chrono.model.Competiteur;
+import fr.chrono.model.exceptions.IllegalCategoryException;
+import fr.chrono.model.exceptions.IllegalNameException;
 import fr.chrono.model.interfaces.ICompetiteur;
 
 public class CompetiteurControler {
-
-	public static final String NAME_FORBIDDEN_CHAR = "[^\\w&&[^ ]&&[^/]&&[^-]]*";
 
 	private static List<ICompetiteur> competiteurs;
 
@@ -40,13 +40,13 @@ public class CompetiteurControler {
 			/*
 			 * name null, means the string is malformed.
 			 */
-			return null;
+			throw new IllegalNameException(newName);
 		}
 		if(containsCompetiteur(newNameChecked, newCategoryChecked)) {
 			/*
 			 * competiteur already exist so we return it.
 			 */
-			return null;
+			throw new IllegalCategoryException(newCategory);
 		}
 		ICompetiteur newCompetiteur = new Competiteur(newNameChecked, newCategoryChecked);
 		competiteurs.add(newCompetiteur);
@@ -265,7 +265,7 @@ public class CompetiteurControler {
 		if(name == null) {
 			return null;
 		}
-		Pattern pattern = Pattern.compile(NAME_FORBIDDEN_CHAR);
+		Pattern pattern = Pattern.compile(ICompetiteur.NAME_FORBIDDEN_CHAR);
 		Matcher match = pattern.matcher(name);
 		while(match.find()) {
 			if(match.group().length()>0) {
@@ -279,9 +279,42 @@ public class CompetiteurControler {
 		return formatName(name.trim());
 	}
 
-	private static String formatName(String name) {
+	public static String formatName(String name) {
 		String nameOut = name.trim();
-		return nameOut;
+		if(nameOut.endsWith("/")) {
+			throw new IllegalNameException(name);
+		}
+		if(Util.numberOfChar(name, '/')>1) {
+			throw new IllegalNameException(name);
+		}
+		String[] info =nameOut.split("/");
+		if(info.length<=0) {
+			throw new IllegalNameException(name);
+		}else if(info.length==1) {
+			return formatNameFirsCharToUpperCase(info[0]);
+		}else if(info.length==2) {
+			return formatNameFirsCharToUpperCase(info[0])+"/"+
+					formatNameFirsCharToUpperCase(info[1]);
+		}else {
+			throw new IllegalNameException(name);
+		}
+		
+	}
+	
+	private static String formatNameFirsCharToUpperCase(String name) {
+		String nameOut = name.trim();
+		String[] info =nameOut.split(" ");
+		nameOut = "";
+		for(String st : info) {
+			if(st.length()==0) {
+				throw new IllegalNameException(name);
+			}
+			String text = st.toLowerCase();
+			nameOut += text.replaceFirst(String.valueOf(text.charAt(0)),
+					String.valueOf(text.charAt(0)).toUpperCase());
+			nameOut+= " ";
+		}
+		return nameOut.trim();
 	}
 
 	public static ICompetiteur getCompetiteur(String name, String category) {
@@ -348,7 +381,7 @@ public class CompetiteurControler {
 				 * use controler function in case of
 				 * to same startOrder
 				 */
-				setStartOrder(competiteur, startOrder);
+				competiteur.setStartOrder(startOrder);
 			}
 			if(info.length>=4) {
 				String startTime = info[3].trim();

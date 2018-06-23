@@ -60,14 +60,17 @@ public class EditingCategoryCell extends TableCell<ICompetiteur, String> {
 	@Override
 	public void commitEdit(String newValue) {
 		ICompetiteur competiteur = (ICompetiteur) getTableRow().getItem();
-		CompetiteurControler.setCategory(competiteur, newValue);
+		if(!CompetiteurControler.setCategory(competiteur, newValue)) {
+			cancelEdit();
+			return;
+		}
 		setText(newValue);
 		setGraphic(null);
 	}
 
 	private CategoryField getCategoryField() {
 		if(categoryField == null) {
-			categoryField = new CategoryField();
+			categoryField = new CategoryField(getItem());
 			categoryField.setOnAction(new EventHandler<ActionEvent>() {
 				
 				@Override
