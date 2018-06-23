@@ -1,15 +1,10 @@
 package fr.chrono.ihm.panels.cells;
 
-import java.util.Optional;
-
-import fr.chrono.controlers.CategoryControler;
 import fr.chrono.controlers.CompetiteurControler;
+import fr.chrono.controlers.listeners.FieldListener;
 import fr.chrono.ihm.fields.CategoryField;
 import fr.chrono.model.interfaces.ICompetiteur;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TableCell;
-import javafx.scene.control.TextInputDialog;
 
 public class EditingCategoryCell extends TableCell<ICompetiteur, String> {
 
@@ -71,25 +66,11 @@ public class EditingCategoryCell extends TableCell<ICompetiteur, String> {
 	private CategoryField getCategoryField() {
 		if(categoryField == null) {
 			categoryField = new CategoryField(getItem());
-			categoryField.setOnAction(new EventHandler<ActionEvent>() {
+			categoryField.addFieldListener(new FieldListener<String>() {
 				
 				@Override
-				public void handle(ActionEvent event) {
-					String text = categoryField.getSelectedCategory();
-					if(text.equals(CategoryField.STRING_NEW_CATEGORY)) {
-						TextInputDialog dialog = new TextInputDialog();
-						dialog.setContentText("Entrez la nouvelle categorie:");
-						dialog.setTitle("Nouvelle categorie");
-						Optional<String> result = dialog.showAndWait();
-						if (result.isPresent()){
-							if(CategoryControler.addCategory(result.get())) {
-								commitEdit(result.get());
-							}
-						}
-					}else {
-						commitEdit(text);
-					}
-					
+				public void valueChanged(String newValue) {
+					commitEdit(newValue);
 				}
 			});
 		}
