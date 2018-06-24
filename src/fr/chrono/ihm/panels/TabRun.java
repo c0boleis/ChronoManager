@@ -4,7 +4,7 @@ import javafx.scene.control.Tab;
 
 public class TabRun extends Tab{
 	
-	private TableRunArrivingV2 tableRunArriving;
+	private TableRunArriving tableRunArriving;
 
 	public TabRun() {
 		this.setText("Course");
@@ -12,9 +12,9 @@ public class TabRun extends Tab{
 		this.setClosable(false);
 	}
 
-	public TableRunArrivingV2 getTableRunArriving() {
+	public TableRunArriving getTableRunArriving() {
 		if(tableRunArriving == null) {
-			tableRunArriving = new TableRunArrivingV2();
+			tableRunArriving = new TableRunArriving();
 		}
 		return tableRunArriving;
 	}

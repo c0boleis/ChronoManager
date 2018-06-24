@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import fr.chrono.controlers.comparators.CompetiteurComparatorByStartOrder;
 import fr.chrono.controlers.comparators.CompetiteurComparatorByCategory;
 import fr.chrono.controlers.listeners.CompetiteurListener;
+import fr.chrono.ihm.panels.PanelCompetiteurRun;
 import fr.chrono.model.Competiteur;
 import fr.chrono.model.exceptions.IllegalCategoryException;
 import fr.chrono.model.exceptions.IllegalNameException;
@@ -25,7 +26,7 @@ public class CompetiteurControler {
 	private static List<ICompetiteur> competiteurs;
 
 	private static List<CompetiteurListener> listeners;
-	
+
 	private static boolean activeListener = true;
 
 	static {
@@ -184,7 +185,7 @@ public class CompetiteurControler {
 					fireCompetiteurChanged(competiteurTmp);
 				}
 			}
-			
+
 		}
 		return true;
 	}
@@ -193,6 +194,16 @@ public class CompetiteurControler {
 		return competiteurs.toArray(new ICompetiteur[0]);
 	}
 
+	public static PanelCompetiteurRun[] getPanelCompetiteurRuns() {
+		ICompetiteur[] competiteurs = CompetiteurControler.getCompetiteurs();
+		List<PanelCompetiteurRun> listOut = new ArrayList<PanelCompetiteurRun>();
+		for(ICompetiteur competiteur : competiteurs) {
+			PanelCompetiteurRun panel = new PanelCompetiteurRun(competiteur);
+			listOut.add(panel);
+		}
+		return listOut.toArray(new PanelCompetiteurRun[0]);
+	}
+	
 	public static boolean containsCompetiteur(ICompetiteur competiteur) {
 		return containsCompetiteur(competiteur.getName(), competiteur.getCategory());
 	}
@@ -298,9 +309,9 @@ public class CompetiteurControler {
 		}else {
 			throw new IllegalNameException(name);
 		}
-		
+
 	}
-	
+
 	private static String formatNameFirsCharToUpperCase(String name) {
 		String nameOut = name.trim();
 		String[] info =nameOut.split(" ");
@@ -330,7 +341,7 @@ public class CompetiteurControler {
 		}
 		return null;
 	}
-	
+
 	public static final boolean save() throws IOException {
 		File fileOut = new File("resources/fileOut.csv");//TODO
 		BufferedWriter buf = new BufferedWriter(new FileWriter(fileOut));
@@ -347,14 +358,14 @@ public class CompetiteurControler {
 		buf.close();
 		return false;
 	}
-	
+
 	public static String getCompetiteurStringOut(ICompetiteur competiteur) {
 		return competiteur.getName()+";"
 				+ competiteur.getCategory()+";"
 				+ competiteur.getStartOrder()+";"
 				+ TimeControler.parseTimeToString(competiteur.getStartTime());
 	}
-	
+
 	@SuppressWarnings("resource")
 	public static final boolean load(File file) throws IOException {
 		/*
@@ -397,7 +408,7 @@ public class CompetiteurControler {
 		activeListener = true;
 		return true;
 	}
-	
+
 	/**
 	 * the function is a default initialize startOrder
 	 * sort by category first and name second
@@ -411,7 +422,7 @@ public class CompetiteurControler {
 			startOrder++;
 		}
 	}
-	
+
 	public static void initStartTime(long startTime, long delta) {
 		Collections.sort(competiteurs, new CompetiteurComparatorByStartOrder());
 		ICompetiteur[] competiteurs = getCompetiteurs();
