@@ -197,7 +197,7 @@ public class CompetiteurControler {
 	public static ICompetiteur[] getCompetiteurs() {
 		return competiteurs.toArray(new ICompetiteur[0]);
 	}
-	
+
 	public static ICompetiteur[] getCompetiteursByStartOrder() {
 		Collections.sort(competiteurs, new CompetiteurComparatorByStartOrder());
 		return competiteurs.toArray(new ICompetiteur[0]);
@@ -212,7 +212,7 @@ public class CompetiteurControler {
 		}
 		return listOut.toArray(new PanelCompetiteurRun[0]);
 	}
-	
+
 	public static boolean containsCompetiteur(ICompetiteur competiteur) {
 		return containsCompetiteur(competiteur.getName(), competiteur.getCategory());
 	}
@@ -372,7 +372,10 @@ public class CompetiteurControler {
 		return competiteur.getName()+";"
 				+ competiteur.getCategory()+";"
 				+ competiteur.getStartOrder()+";"
-				+ TimeControler.parseTimeToString(competiteur.getStartTime());
+				+ TimeControler.parseTimeToString(competiteur.getStartTime())+";"
+				+ TimeControler.parseTimeToString(competiteur.getArrivalTime())+";"
+				+ TimeControler.parseTimeToString(competiteur.getDeltaTime())+";"
+				+ TimeControler.parseTimeToString(competiteur.getRunTime());
 	}
 
 	@SuppressWarnings("resource")
