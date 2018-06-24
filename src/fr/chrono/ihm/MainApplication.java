@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import fr.chrono.controlers.CompetiteurControler;
+import fr.chrono.controlers.RunControler;
+import fr.chrono.controlers.listeners.RunListener;
 import fr.chrono.ihm.panels.TabCompetiteurList;
 import fr.chrono.ihm.panels.TabRun;
 import fr.chrono.model.interfaces.ICompetiteur;
@@ -29,6 +31,22 @@ public class MainApplication extends Application{
 	private TabRun tabRun;
 	
 	private MainMenuBar mainMenuBar;
+	
+	private RunListener runListener;
+	
+	public MainApplication() {
+		super();
+		RunControler.addRunListener(getRunListener());
+	}
+	
+	public static void main(String[] args) {
+		try {
+			CompetiteurControler.load(new File("resources/liste_depart.csv"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		MainApplication.launch(args);
+	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -41,15 +59,6 @@ public class MainApplication extends Application{
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-	}
-
-	public static void main(String[] args) {
-		try {
-			CompetiteurControler.load(new File("resources/liste_depart.csv"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		MainApplication.launch(args);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -80,7 +89,6 @@ public class MainApplication extends Application{
 		if(mainTabPane == null) {
 			mainTabPane = new TabPane();
 			mainTabPane.getTabs().add(getTabCompetiteurList());
-			mainTabPane.getTabs().add(getTabRun());
 		}
 		return mainTabPane;
 	}
@@ -104,6 +112,25 @@ public class MainApplication extends Application{
 			mainMenuBar = new MainMenuBar();
 		}
 		return mainMenuBar;
+	}
+
+	private RunListener getRunListener() {
+		if(runListener == null) {
+			runListener = new RunListener() {
+				
+				@Override
+				public void runStoped() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void runStarted() {
+					mainTabPane.getTabs().add(getTabRun());
+				}
+			};
+		}
+		return runListener;
 	}
 
 }

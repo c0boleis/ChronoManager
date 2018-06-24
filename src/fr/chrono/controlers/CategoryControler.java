@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import fr.chrono.controlers.listeners.CatergoyListener;
+import fr.chrono.model.Category;
+import fr.chrono.model.interfaces.ICategory;
 import fr.chrono.model.interfaces.ICompetiteur;
 
 public class CategoryControler {
@@ -31,6 +33,29 @@ public class CategoryControler {
 			}
 		}
 		return categories.toArray(new String[0]);
+	}
+	
+	public static ICategory[] generateCategories() {
+		List<ICategory> categories = new ArrayList<ICategory>();
+		ICompetiteur[] competiteurs = CompetiteurControler.getCompetiteurs();
+		for(ICompetiteur competiteur : competiteurs) {
+			ICategory category = getCategories(categories, competiteur.getCategory());
+			if(category==null) {
+				category = new Category(competiteur.getCategory());
+				categories.add(category);
+			}
+			category.addCompetiteur(competiteur);
+		}
+		return categories.toArray(new ICategory[0]);
+	}
+	
+	public static ICategory getCategories(List<ICategory> categories,String nameCategory) {
+		for(ICategory category : categories) {
+			if(category.getName().equals(nameCategory)) {
+				return category;
+			}
+		}
+		return null;
 	}
 
 	public static boolean addCategory(String category) {

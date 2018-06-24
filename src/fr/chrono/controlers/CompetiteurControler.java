@@ -19,6 +19,7 @@ import fr.chrono.ihm.panels.PanelCompetiteurRun;
 import fr.chrono.model.Competiteur;
 import fr.chrono.model.exceptions.IllegalCategoryException;
 import fr.chrono.model.exceptions.IllegalNameException;
+import fr.chrono.model.interfaces.ICategory;
 import fr.chrono.model.interfaces.ICompetiteur;
 
 public class CompetiteurControler {
@@ -423,12 +424,18 @@ public class CompetiteurControler {
 		}
 	}
 
-	public static void initStartTime(long startTime, long delta) {
+	public static void initStartTime(long startTime, long deltaCompetiteurs, long deltaCategorires) {
 		Collections.sort(competiteurs, new CompetiteurComparatorByStartOrder());
-		ICompetiteur[] competiteurs = getCompetiteurs();
-		for(ICompetiteur competiteur : competiteurs) {
-			setStartTime(competiteur, startTime);
-			startTime+=delta;
+		ICategory[] categories = CategoryControler.generateCategories();
+		for(ICategory category : categories) {
+			//init startTime
+			startTime-=deltaCompetiteurs;
+			ICompetiteur[] competiteurs = category.getCompetiteurs();
+			for(ICompetiteur competiteur : competiteurs) {
+				startTime+=deltaCompetiteurs;
+				setStartTime(competiteur, startTime);
+			}
+			startTime+=deltaCategorires;
 		}
 	}
 

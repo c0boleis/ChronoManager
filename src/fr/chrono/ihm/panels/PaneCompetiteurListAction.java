@@ -1,6 +1,7 @@
 package fr.chrono.ihm.panels;
 
 import fr.chrono.controlers.CompetiteurControler;
+import fr.chrono.controlers.RunControler;
 import fr.chrono.ihm.dialogs.ExceptionDialog;
 import fr.chrono.ihm.fields.CategoryField;
 import fr.chrono.ihm.fields.NameField;
@@ -39,13 +40,23 @@ public class PaneCompetiteurListAction extends BorderPane{
 
 	private TimeField fieldStartTime;
 
-	private Label labelDelta;
+	private Label labelDeltaCompetiteur;
 
-	private TimeField fieldDelta;
+	private TimeField fieldDeltaCompetiteur;
+	
+	private Label labelDeltaCategory;
+
+	private TimeField fieldDeltaCategory;
 
 	private Button buttonInitStartTime;
 
 	private Button buttonInitStartOrder;
+	
+	/*
+	 * set start run
+	 */
+	
+	private Button buttonStartRun;
 
 	public PaneCompetiteurListAction() {
 		GridPane gridPane = new GridPane();
@@ -58,12 +69,17 @@ public class PaneCompetiteurListAction extends BorderPane{
 		gridPane.add(getLabelStartTime(), 0, 1);
 		gridPane.add(getFieldStartTime(), 1, 1);
 		gridPane.add(getButtonInitStartTime(), 2, 1);
-		GridPane.setRowSpan(getButtonInitStartTime(), 2);
+		GridPane.setRowSpan(getButtonInitStartTime(), 3);
 		gridPane.add(getButtonInitStartOrder(), 3, 1);
-		GridPane.setRowSpan(getButtonInitStartOrder(), 2);
+		GridPane.setRowSpan(getButtonInitStartOrder(), 3);
 		
 		gridPane.add(getLabelDelta(), 0, 2);
 		gridPane.add(getFieldDelta(), 1, 2);
+		gridPane.add(getLabelDeltaCategory(), 0, 3);
+		gridPane.add(getFieldDeltaCategory(), 1, 3);
+		
+		gridPane.add(getButtonStartRun(), 5, 0);
+		GridPane.setRowSpan(getButtonStartRun(), GridPane.REMAINING);
 		
 		
 		GridPane.setFillHeight(getButtonInitStartTime(), true);
@@ -188,20 +204,20 @@ public class PaneCompetiteurListAction extends BorderPane{
 	 * @return the labelDelta
 	 */
 	private Label getLabelDelta() {
-		if(labelDelta == null) {
-			labelDelta = new Label("Ecart:");
+		if(labelDeltaCompetiteur == null) {
+			labelDeltaCompetiteur = new Label("Ecart competiteurs:");
 		}
-		return labelDelta;
+		return labelDeltaCompetiteur;
 	}
 
 	/**
 	 * @return the textFieldDelta
 	 */
 	private TimeField getFieldDelta() {
-		if(fieldDelta == null) {
-			fieldDelta = new TimeField();
+		if(fieldDeltaCompetiteur == null) {
+			fieldDeltaCompetiteur = new TimeField();
 		}
-		return fieldDelta;
+		return fieldDeltaCompetiteur;
 	}
 
 	/**
@@ -212,10 +228,14 @@ public class PaneCompetiteurListAction extends BorderPane{
 			buttonInitStartTime = new Button();
 			buttonInitStartTime.setText("Init heure\nde départ");
 			buttonInitStartTime.setMaxHeight(Integer.MAX_VALUE);
+			buttonInitStartTime.setMaxWidth(Integer.MAX_VALUE);
 			buttonInitStartTime.setOnAction(new EventHandler<ActionEvent>() {
 
 				@Override public void handle(ActionEvent e) {
-					CompetiteurControler.initStartTime(fieldStartTime.getTime(), fieldDelta.getTime());
+					CompetiteurControler.initStartTime(
+							getFieldStartTime().getTime(),
+							getFieldDelta().getTime(),
+							getFieldDeltaCategory().getTime());
 				}
 
 			});
@@ -228,6 +248,7 @@ public class PaneCompetiteurListAction extends BorderPane{
 			buttonInitStartOrder = new Button();
 			buttonInitStartOrder.setText("Init Ordre\nde départ");
 			buttonInitStartOrder.setMaxHeight(Integer.MAX_VALUE);
+			buttonInitStartOrder.setMaxWidth(Integer.MAX_VALUE);
 			buttonInitStartOrder.setOnAction(new EventHandler<ActionEvent>() {
 
 				@Override public void handle(ActionEvent e) {
@@ -245,6 +266,43 @@ public class PaneCompetiteurListAction extends BorderPane{
 		}else {
 			getButtonAddCompetiteur().setDisable(true);
 		}
+	}
+
+	/**
+	 * @return the labelDeltaCategory
+	 */
+	private Label getLabelDeltaCategory() {
+		if(labelDeltaCategory == null) {
+			labelDeltaCategory = new Label("Ecart categories:");
+		}
+		return labelDeltaCategory;
+	}
+
+	/**
+	 * @return the fieldDeltaCategory
+	 */
+	private TimeField getFieldDeltaCategory() {
+		if(fieldDeltaCategory == null) {
+			fieldDeltaCategory = new TimeField();
+		}
+		return fieldDeltaCategory;
+	}
+
+	public Button getButtonStartRun() {
+		if(buttonStartRun == null) {
+			buttonStartRun = new Button();
+			buttonStartRun.setText("Démarer\nla\ncourse");
+			buttonStartRun.setMaxHeight(Integer.MAX_VALUE);
+			buttonStartRun.setMaxWidth(Integer.MAX_VALUE);
+			buttonStartRun.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					RunControler.startRun();
+				}
+			});
+		}
+		return buttonStartRun;
 	}
 
 }
