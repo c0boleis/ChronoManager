@@ -3,10 +3,6 @@ package fr.chrono.controlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hamcrest.core.IsSame;
-
-import com.sun.javafx.image.impl.ByteIndexed.Getter;
-
 import fr.chrono.controlers.listeners.RunListener;
 import fr.chrono.model.interfaces.ICompetiteur;
 import javafx.application.Platform;
