@@ -5,5 +5,7 @@ public interface RunListener {
 	public void runStarted();
 	
 	public void runStoped();
+	
+	public void stateChange();
 
 }

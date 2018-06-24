@@ -11,6 +11,10 @@ public class TabRun extends Tab{
 		this.setContent(getTableRunArriving());
 		this.setClosable(false);
 	}
+	
+	public void refresh() {
+		getTableRunArriving().refresh();
+	}
 
 	public TableRunArriving getTableRunArriving() {
 		if(tableRunArriving == null) {

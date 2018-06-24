@@ -40,10 +40,12 @@ public class MainApplication extends Application{
 	}
 	
 	public static void main(String[] args) {
-		try {
-			CompetiteurControler.load(new File("resources/liste_depart.csv"));
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(args.length>0) {
+			try {
+				CompetiteurControler.load(new File(args[0]));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		MainApplication.launch(args);
 	}
@@ -53,7 +55,7 @@ public class MainApplication extends Application{
 		BorderPane borderPane = new BorderPane();
 		borderPane.setTop(getMainMenuBar());
 		borderPane.setCenter(getMainTabPane());
-		Scene scene = new Scene(borderPane, 500,400);
+		Scene scene = new Scene(borderPane, 550,400);
 
 		primaryStage.setTitle("ChronoManager");
 		primaryStage.setScene(scene);
@@ -120,13 +122,20 @@ public class MainApplication extends Application{
 				
 				@Override
 				public void runStoped() {
-					// TODO Auto-generated method stub
-					
+					mainTabPane.getTabs().remove(getTabRun());
 				}
 				
 				@Override
 				public void runStarted() {
+					getTabRun().refresh();
 					mainTabPane.getTabs().add(getTabRun());
+					mainTabPane.getSelectionModel().select(getTabRun());
+				}
+
+				@Override
+				public void stateChange() {
+					// TODO Auto-generated method stub
+					
 				}
 			};
 		}

@@ -1,6 +1,7 @@
 package fr.chrono.model;
 
 import fr.chrono.controlers.TimeControler;
+import fr.chrono.model.interfaces.CompetiteurRunStatus;
 import fr.chrono.model.interfaces.ICompetiteur;
 
 public class Competiteur implements ICompetiteur{
@@ -156,5 +157,22 @@ public class Competiteur implements ICompetiteur{
 		return this.arrivalTime>0l;
 	}
 
+	@Override
+	public CompetiteurRunStatus getRunStatus() {
+		long currentTime = TimeControler.getCurrentTime();
+		if(currentTime<this.startTime) {
+			return CompetiteurRunStatus.notSart;
+		}
+		if(currentTime>=this.startTime && !isArrived()) {
+			return CompetiteurRunStatus.start;
+		}
+		if(isArrived()) {
+			return CompetiteurRunStatus.finish;
+		}
+		return CompetiteurRunStatus.abs;
+	}
+
 	
 }
+
+	

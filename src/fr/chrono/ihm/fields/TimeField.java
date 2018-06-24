@@ -31,6 +31,11 @@ public class TimeField extends GridPane{
 		initText(0);
 	}
 	
+	public TimeField(long defaultValue) {
+		this();
+		initText(defaultValue);
+	}
+	
 	public void initText(long time) {
 		String[] tab = TimeControler.parseTimeToStringTab(time);
 		getTextFieldHour().setText(tab[0]);

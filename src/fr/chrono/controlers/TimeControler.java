@@ -102,5 +102,9 @@ public class TimeControler {
 		currentTime+=offset;
 		return currentTime%dayTime;
 	}
+	
+	public static String getCurrentTimeString() {
+		return parseTimeToString(getCurrentTime());
+	}
 
 }

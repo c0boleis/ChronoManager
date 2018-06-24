@@ -37,5 +37,7 @@ public interface ICompetiteur {
 	public String getRunTimeString();
 	
 	public boolean isArrived();
+	
+	public CompetiteurRunStatus getRunStatus();
 
 }

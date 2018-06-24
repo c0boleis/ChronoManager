@@ -53,6 +53,7 @@ public class CompetiteurControler {
 		ICompetiteur newCompetiteur = new Competiteur(newNameChecked, newCategoryChecked);
 		competiteurs.add(newCompetiteur);
 		fireCompetiteurAdded(newCompetiteur);
+		RunControler.checkIfReadyToStart();
 		return newCompetiteur;
 	}
 
@@ -85,6 +86,7 @@ public class CompetiteurControler {
 		}
 		competiteur.setStartTime(newStartTime);
 		fireCompetiteurChanged(competiteur);
+		RunControler.checkIfReadyToStart();
 		return true;
 	}
 
@@ -188,10 +190,16 @@ public class CompetiteurControler {
 			}
 
 		}
+		RunControler.checkIfReadyToStart();
 		return true;
 	}
 
 	public static ICompetiteur[] getCompetiteurs() {
+		return competiteurs.toArray(new ICompetiteur[0]);
+	}
+	
+	public static ICompetiteur[] getCompetiteursByStartOrder() {
+		Collections.sort(competiteurs, new CompetiteurComparatorByStartOrder());
 		return competiteurs.toArray(new ICompetiteur[0]);
 	}
 
@@ -243,7 +251,7 @@ public class CompetiteurControler {
 		return listeners.toArray(new CompetiteurListener[0]);
 	}
 
-	private static void fireCompetiteurChanged(ICompetiteur competiteur) {
+	protected static void fireCompetiteurChanged(ICompetiteur competiteur) {
 		if(!activeListener) {
 			return;
 		}

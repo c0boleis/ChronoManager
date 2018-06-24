@@ -1,6 +1,8 @@
 package fr.chrono.ihm.panels;
 
+import fr.chrono.controlers.CompetiteurControler;
 import fr.chrono.controlers.TimeControler;
+import fr.chrono.controlers.listeners.CompetiteurListener;
 import fr.chrono.model.interfaces.ICompetiteur;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -33,6 +35,21 @@ public class PanelCompetiteurInfo extends GridPane{
 		super();
 		this.competiteur = competiteurIn;
 		init();
+		CompetiteurControler.addCompetiteurListener(new CompetiteurListener() {
+			
+			@Override
+			public void competiteurRemoved(ICompetiteur competiteur) {}
+			
+			@Override
+			public void competiteurChange(ICompetiteur competiteur) {
+				if(PanelCompetiteurInfo.this.competiteur.equals(competiteur)) {
+					refreshText();
+				}
+			}
+			
+			@Override
+			public void competiteurAdded(ICompetiteur competiteur) {}
+		});
 	}
 
 	public void init() {

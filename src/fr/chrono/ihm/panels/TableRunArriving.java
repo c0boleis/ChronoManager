@@ -15,6 +15,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 public class TableRunArriving extends BorderPane{
+	
+	private PanelRunInfo panelRunInfo;
 
 	private TableView<PanelCompetiteurRun> table;
 
@@ -27,6 +29,7 @@ public class TableRunArriving extends BorderPane{
 	public TableRunArriving() {
 		super();
 		this.setCenter(getTable());
+		this.setTop(getPanelRunInfo());
 	}
 
 	/**
@@ -89,6 +92,17 @@ public class TableRunArriving extends BorderPane{
 			btnArrivingColumn.setCellValueFactory(new PropertyValueFactory<PanelCompetiteurRun, Button>("buttonFinish"));
 		}
 		return btnArrivingColumn;
+	}
+
+	public PanelRunInfo getPanelRunInfo() {
+		if(panelRunInfo == null) {
+			panelRunInfo = new PanelRunInfo();
+		}
+		return panelRunInfo;
+	}
+
+	public void refresh() {
+		getTable().refresh();
 	}
 
 }

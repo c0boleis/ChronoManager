@@ -2,6 +2,7 @@ package fr.chrono.ihm.panels;
 
 import fr.chrono.controlers.CompetiteurControler;
 import fr.chrono.controlers.RunControler;
+import fr.chrono.controlers.listeners.RunListener;
 import fr.chrono.ihm.dialogs.ExceptionDialog;
 import fr.chrono.ihm.fields.CategoryField;
 import fr.chrono.ihm.fields.NameField;
@@ -43,7 +44,7 @@ public class PaneCompetiteurListAction extends BorderPane{
 	private Label labelDeltaCompetiteur;
 
 	private TimeField fieldDeltaCompetiteur;
-	
+
 	private Label labelDeltaCategory;
 
 	private TimeField fieldDeltaCategory;
@@ -51,12 +52,14 @@ public class PaneCompetiteurListAction extends BorderPane{
 	private Button buttonInitStartTime;
 
 	private Button buttonInitStartOrder;
-	
+
 	/*
 	 * set start run
 	 */
-	
+
 	private Button buttonStartRun;
+	
+	private Label labelRunStartState;
 
 	public PaneCompetiteurListAction() {
 		GridPane gridPane = new GridPane();
@@ -72,16 +75,19 @@ public class PaneCompetiteurListAction extends BorderPane{
 		GridPane.setRowSpan(getButtonInitStartTime(), 3);
 		gridPane.add(getButtonInitStartOrder(), 3, 1);
 		GridPane.setRowSpan(getButtonInitStartOrder(), 3);
-		
+
 		gridPane.add(getLabelDelta(), 0, 2);
-		gridPane.add(getFieldDelta(), 1, 2);
+		gridPane.add(getFieldDeltaCompetiteur(), 1, 2);
 		gridPane.add(getLabelDeltaCategory(), 0, 3);
 		gridPane.add(getFieldDeltaCategory(), 1, 3);
-		
+
 		gridPane.add(getButtonStartRun(), 5, 0);
 		GridPane.setRowSpan(getButtonStartRun(), GridPane.REMAINING);
 		
-		
+		gridPane.add(getLabelRunStartState(), 0, 4);
+		GridPane.setColumnSpan(getLabelRunStartState(), GridPane.REMAINING);
+
+
 		GridPane.setFillHeight(getButtonInitStartTime(), true);
 		ColumnConstraints col1 = new ColumnConstraints();
 		col1.setMinWidth(80);
@@ -89,11 +95,11 @@ public class PaneCompetiteurListAction extends BorderPane{
 		col2.setMinWidth(80);
 		col2.setMaxWidth(150);
 		ColumnConstraints col3 = new ColumnConstraints();
-//		col3.setPercentWidth(25);
+		//		col3.setPercentWidth(25);
 		ColumnConstraints col4 = new ColumnConstraints();
-//		col2.setPercentWidth(50);
+		//		col2.setPercentWidth(50);
 		ColumnConstraints col5 = new ColumnConstraints();
-//		col3.setPercentWidth(25);
+		//		col3.setPercentWidth(25);
 		gridPane.getColumnConstraints().addAll(col1,col2,col3,col4,col5);
 		this.setCenter(gridPane);
 	}
@@ -169,7 +175,7 @@ public class PaneCompetiteurListAction extends BorderPane{
 			alert.showAndWait();
 			return;
 		}
-		
+
 		if(competiteur == null) {
 			System.err.println("competiteur non ajouté");
 		}else {
@@ -213,9 +219,9 @@ public class PaneCompetiteurListAction extends BorderPane{
 	/**
 	 * @return the textFieldDelta
 	 */
-	private TimeField getFieldDelta() {
+	private TimeField getFieldDeltaCompetiteur() {
 		if(fieldDeltaCompetiteur == null) {
-			fieldDeltaCompetiteur = new TimeField();
+			fieldDeltaCompetiteur = new TimeField(30l*1000l);
 		}
 		return fieldDeltaCompetiteur;
 	}
@@ -234,7 +240,7 @@ public class PaneCompetiteurListAction extends BorderPane{
 				@Override public void handle(ActionEvent e) {
 					CompetiteurControler.initStartTime(
 							getFieldStartTime().getTime(),
-							getFieldDelta().getTime(),
+							getFieldDeltaCompetiteur().getTime(),
 							getFieldDeltaCategory().getTime());
 				}
 
@@ -259,7 +265,7 @@ public class PaneCompetiteurListAction extends BorderPane{
 		}
 		return buttonInitStartOrder;
 	}
-	
+
 	public void checkAddCompetiteurAvailable() {
 		if(getTextFieldName().nameIsRight()) {
 			getButtonAddCompetiteur().setDisable(false);
@@ -283,7 +289,7 @@ public class PaneCompetiteurListAction extends BorderPane{
 	 */
 	private TimeField getFieldDeltaCategory() {
 		if(fieldDeltaCategory == null) {
-			fieldDeltaCategory = new TimeField();
+			fieldDeltaCategory = new TimeField(60l*1000l);
 		}
 		return fieldDeltaCategory;
 	}
@@ -294,8 +300,9 @@ public class PaneCompetiteurListAction extends BorderPane{
 			buttonStartRun.setText("Démarer\nla\ncourse");
 			buttonStartRun.setMaxHeight(Integer.MAX_VALUE);
 			buttonStartRun.setMaxWidth(Integer.MAX_VALUE);
+			buttonStartRun.setDisable(!RunControler.isReadyToStart());
 			buttonStartRun.setOnAction(new EventHandler<ActionEvent>() {
-				
+
 				@Override
 				public void handle(ActionEvent event) {
 					RunControler.startRun();
@@ -303,6 +310,28 @@ public class PaneCompetiteurListAction extends BorderPane{
 			});
 		}
 		return buttonStartRun;
+	}
+
+	private Label getLabelRunStartState() {
+		if(labelRunStartState == null) {
+			labelRunStartState= new Label();
+			labelRunStartState.setText(RunControler.getStartStatus());
+			RunControler.addRunListener(new RunListener() {
+				
+				@Override
+				public void stateChange() {
+					labelRunStartState.setText(RunControler.getStartStatus());
+				}
+				
+				@Override
+				public void runStoped() {}
+				
+				@Override
+				public void runStarted() {}
+				
+			});
+		}
+		return labelRunStartState;
 	}
 
 }
