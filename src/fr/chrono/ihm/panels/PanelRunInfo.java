@@ -41,7 +41,7 @@ public class PanelRunInfo extends BorderPane{
 			        //Do some stuff in another thread
 			    	while(true) {
 				    	try {
-							Thread.sleep(250);
+							Thread.sleep(33);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}

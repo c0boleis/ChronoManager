@@ -383,7 +383,7 @@ public class CompetiteurControler {
 		/*
 		 * Deactivate listener
 		 */
-		activeListener = false;
+		activeListener = true; 
 		BufferedReader buf = new BufferedReader(new FileReader(file));
 		String line = buf.readLine();
 		while(line!=null) {

@@ -25,6 +25,12 @@ public class TableCompetiteurList extends TableView<ICompetiteur>{
 
 	private TableColumn<ICompetiteur,Long> startTimeColumn;
 
+	private TableColumn<ICompetiteur,Long> deltaTimeColumn;
+	
+	private TableColumn<ICompetiteur,Long> arrivalTimeColumn;
+
+	private TableColumn<ICompetiteur,Long> runTimeColumn;
+
 	private ObservableList<ICompetiteur> data;
 
 	private CompetiteurListener competiteurListener;
@@ -38,7 +44,10 @@ public class TableCompetiteurList extends TableView<ICompetiteur>{
 				getNameColumn(),
 				getCategoryColumn(),
 				getStartOrderColumn(),
-				getStartTimeColumn());
+				getStartTimeColumn(),
+				getArrivalTimeColumn(),
+				getDeltaTimeColumn(),
+				getRunTimeColumn());
 		data = FXCollections.observableArrayList(
 				CompetiteurControler.getCompetiteurs());
 		this.setEditable(true);
@@ -143,12 +152,47 @@ public class TableCompetiteurList extends TableView<ICompetiteur>{
 		return competiteurListener;
 	}
 
-//	public Callback<TableColumn<ICompetiteur, String>,
-//	TableCell<ICompetiteur, String>> getCellFactory() {
-//		if(cellFactory == null) {
-//			cellFactory = (TableColumn<ICompetiteur, String> p) -> new EditingCell();
-//		}
-//		return cellFactory;
-//	}
+	private TableColumn<ICompetiteur,Long> getDeltaTimeColumn() {
+		if(deltaTimeColumn == null) {
+			deltaTimeColumn= new TableColumn<ICompetiteur,Long>("Temps de synchro.");
+			deltaTimeColumn.setCellValueFactory(new PropertyValueFactory<ICompetiteur,Long>("deltaTime"));
+			deltaTimeColumn.setEditable(true);
+			deltaTimeColumn.setCellFactory(new Callback<TableColumn<ICompetiteur, Long>, TableCell<ICompetiteur, Long>>() {
+				@Override
+				public TableCell<ICompetiteur, Long> call(TableColumn<ICompetiteur, Long> col) {
+					return new EditingStartTimeCell();
+				}
+			});
+		}
+		return deltaTimeColumn;
+	}
+
+	private TableColumn<ICompetiteur,Long> getRunTimeColumn() {
+		if(runTimeColumn == null) {
+			runTimeColumn= new TableColumn<ICompetiteur,Long>("Temps");
+			runTimeColumn.setCellValueFactory(new PropertyValueFactory<ICompetiteur,Long>("runTime"));
+			runTimeColumn.setCellFactory(new Callback<TableColumn<ICompetiteur, Long>, TableCell<ICompetiteur, Long>>() {
+				@Override
+				public TableCell<ICompetiteur, Long> call(TableColumn<ICompetiteur, Long> col) {
+					return new EditingStartTimeCell();
+				}
+			});
+		}
+		return runTimeColumn;
+	}
+
+	public TableColumn<ICompetiteur,Long> getArrivalTimeColumn() {
+		if(arrivalTimeColumn == null) {
+			arrivalTimeColumn= new TableColumn<ICompetiteur,Long>("Temps d'arrivée");
+			arrivalTimeColumn.setCellValueFactory(new PropertyValueFactory<ICompetiteur,Long>("arrivalTime"));
+			arrivalTimeColumn.setCellFactory(new Callback<TableColumn<ICompetiteur, Long>, TableCell<ICompetiteur, Long>>() {
+				@Override
+				public TableCell<ICompetiteur, Long> call(TableColumn<ICompetiteur, Long> col) {
+					return new EditingStartTimeCell();
+				}
+			});
+		}
+		return arrivalTimeColumn;
+	}
 
 }

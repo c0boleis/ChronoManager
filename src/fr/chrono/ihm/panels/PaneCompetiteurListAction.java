@@ -62,6 +62,21 @@ public class PaneCompetiteurListAction extends BorderPane{
 	private Label labelRunStartState;
 
 	public PaneCompetiteurListAction() {
+		RunControler.addRunListener(new RunListener() {
+			
+			@Override
+			public void stateChange() {
+				getLabelRunStartState().setText(RunControler.getStartStatus());
+				getButtonStartRun().setDisable(!RunControler.isReadyToStart());
+			}
+			
+			@Override
+			public void runStoped() {}
+			
+			@Override
+			public void runStarted() {}
+			
+		});
 		GridPane gridPane = new GridPane();
 		gridPane.add(getLabelName(), 0, 0);
 		gridPane.add(getTextFieldName(), 1, 0);
@@ -316,20 +331,6 @@ public class PaneCompetiteurListAction extends BorderPane{
 		if(labelRunStartState == null) {
 			labelRunStartState= new Label();
 			labelRunStartState.setText(RunControler.getStartStatus());
-			RunControler.addRunListener(new RunListener() {
-				
-				@Override
-				public void stateChange() {
-					labelRunStartState.setText(RunControler.getStartStatus());
-				}
-				
-				@Override
-				public void runStoped() {}
-				
-				@Override
-				public void runStarted() {}
-				
-			});
 		}
 		return labelRunStartState;
 	}

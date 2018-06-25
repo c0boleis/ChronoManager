@@ -1,13 +1,16 @@
 package fr.chrono.ihm;
 
+import java.io.File;
 import java.io.IOException;
 
 import fr.chrono.controlers.CompetiteurControler;
+import fr.chrono.ihm.dialogs.ExceptionDialog;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.stage.FileChooser;
 
 public class MainMenuBar extends MenuBar{
 	
@@ -49,6 +52,23 @@ public class MainMenuBar extends MenuBar{
 		if(menuItemOpen == null) {
 			menuItemOpen = new MenuItem();
 			menuItemOpen.setText("Open");
+			menuItemOpen.setOnAction(new EventHandler<ActionEvent>() {
+				
+				@Override
+				public void handle(ActionEvent event) {
+					FileChooser fileChooser = new FileChooser();
+					File file = fileChooser.showOpenDialog(null);
+					if(file==null) {
+						return;
+					}
+					try {
+						CompetiteurControler.load(file);
+					} catch (IOException e) {
+						ExceptionDialog dialog = new ExceptionDialog(e);
+						dialog.showAndWait();
+					}
+				}
+			});
 		}
 		return menuItemOpen;
 	}

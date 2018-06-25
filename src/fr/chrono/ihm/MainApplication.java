@@ -34,7 +34,7 @@ public class MainApplication extends Application{
 	
 	private RunListener runListener;
 	
-	public MainApplication() {
+	public  MainApplication() {
 		super();
 		RunControler.addRunListener(getRunListener());
 	}
