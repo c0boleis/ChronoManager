@@ -19,7 +19,6 @@ import fr.chrono.ihm.panels.PanelCompetiteurRun;
 import fr.chrono.model.Competiteur;
 import fr.chrono.model.exceptions.IllegalCategoryException;
 import fr.chrono.model.exceptions.IllegalNameException;
-import fr.chrono.model.interfaces.ICategory;
 import fr.chrono.model.interfaces.ICompetiteur;
 
 public class CompetiteurControler {
@@ -190,6 +189,7 @@ public class CompetiteurControler {
 			}
 
 		}
+		Collections.sort(competiteurs,new CompetiteurComparatorByStartOrder());
 		RunControler.checkIfReadyToStart();
 		return true;
 	}
@@ -437,16 +437,22 @@ public class CompetiteurControler {
 
 	public static void initStartTime(long startTime, long deltaCompetiteurs, long deltaCategorires) {
 		Collections.sort(competiteurs, new CompetiteurComparatorByStartOrder());
-		ICategory[] categories = CategoryControler.generateCategories();
-		for(ICategory category : categories) {
-			//init startTime
-			startTime-=deltaCompetiteurs;
-			ICompetiteur[] competiteurs = category.getCompetiteurs();
-			for(ICompetiteur competiteur : competiteurs) {
-				startTime+=deltaCompetiteurs;
-				setStartTime(competiteur, startTime);
+		ICompetiteur[] competiteursTmp = getCompetiteurs();
+		ICompetiteur competiteurCurrent = competiteursTmp[0];
+		boolean first = true;
+		for(ICompetiteur competiteur : competiteursTmp) {
+			if(first) {
+				first  = false;
+			}else {
+				if(competiteurCurrent.getCategory()
+						.equals(competiteur.getCategory())) {
+					startTime+=deltaCompetiteurs;
+				}else {
+					startTime+=deltaCategorires;
+				}
 			}
-			startTime+=deltaCategorires;
+			setStartTime(competiteur, startTime);
+			competiteurCurrent = competiteur;
 		}
 	}
 

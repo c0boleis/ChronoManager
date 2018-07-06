@@ -1,6 +1,7 @@
 package fr.chrono.ihm.panels;
 
 import fr.chrono.controlers.CompetiteurControler;
+import fr.chrono.controlers.comparators.CompetiteurComparatorByStartOrder;
 import fr.chrono.controlers.listeners.CompetiteurListener;
 import fr.chrono.ihm.panels.cells.EditingCategoryCell;
 import fr.chrono.ihm.panels.cells.EditingNameCell;
@@ -140,6 +141,7 @@ public class TableCompetiteurList extends TableView<ICompetiteur>{
 
 				@Override
 				public void competiteurChange(ICompetiteur competiteur) {
+					data.sort(new CompetiteurComparatorByStartOrder());
 					refresh();
 				} 
 
