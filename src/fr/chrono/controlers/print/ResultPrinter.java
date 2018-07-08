@@ -1,29 +1,32 @@
 package fr.chrono.controlers.print;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 
-import javax.imageio.ImageIO;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.fop.apps.FOPException;
+import org.apache.fop.apps.FOUserAgent;
+import org.apache.fop.apps.Fop;
+import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.MimeConstants;
 
 import fr.chrono.controlers.CategoryControler;
 import fr.chrono.controlers.CompetiteurControler;
 import fr.chrono.model.interfaces.ICategory;
 import fr.chrono.model.interfaces.ICompetiteur;
-import javafx.application.Application;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 
-public class ResultPrinter extends Application{
+public class ResultPrinter{
 
-	private WebView webView;
+	private static boolean startOrderResult = false;
 
 	public static void main(String[] args) {
 		if(args.length>0) {
@@ -33,99 +36,131 @@ public class ResultPrinter extends Application{
 				e.printStackTrace();
 			}
 		}
-		launch(args);
+		try {
+			exportResultToPdf(new File("resources/filePdf.pdf"));
+		} catch (FOPException | TransformerException | IOException e) {
+			e.printStackTrace();
+		}		
+		System.exit(0);
 	}
 
-	public String printResult() {
+	private static String printResult() throws FOPException, TransformerException, IOException {
 		String result  ="";
 		result+=getHead()+"\n";
 		result+=getBody();
-//		FopFactory fopFactory = FopFactory.newInstance();
 		return result;
 	}
 
-	public WebView getWebView() {
-		if(webView == null) {
-			webView = new WebView();
+	private static File saveStringToFile(String text,String fileOutPath) throws IOException {
+		File fileOut = new File(fileOutPath);
+		BufferedWriter buf = new BufferedWriter(new FileWriter(fileOut));
+		buf.write(text);
+		buf.close();
+		return fileOut;
+	}
+
+	public static void exportResultToPdf(File fileOut) throws FOPException, TransformerException, IOException {
+		startOrderResult = false;
+		exportPdfString(printResult(),fileOut);
+	}
+
+	public static void exportStartOrderToPdf(File fileOut) throws FOPException, TransformerException, IOException {
+		startOrderResult = true;
+		exportPdfString(printResult(),fileOut);
+	}
+
+	private static void exportPdfString(String xmlContent,File fileOut) throws FOPException, TransformerException, IOException {
+		File fileXml = saveStringToFile(xmlContent, "resources/fileXml.xml");
+		//				File xsltFile = new File("resources/template.xsl");
+		File xsltFile = new File("resources/test_1.xsl");
+		// the XML file which provides the input
+		//				StreamSource xmlSource = new StreamSource(new File("resources/list.xml"));
+		//		StreamSource xmlSource = new StreamSource(new File("resources/test_file.xml"));
+		StreamSource xmlSource = new StreamSource(fileXml);
+		// create an instance of fop factory
+		FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
+		// a user agent is needed for transformation
+		FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
+		// Setup output
+		OutputStream out;
+		out = new java.io.FileOutputStream(fileOut.getAbsolutePath());
+
+		try {
+			// Construct fop with desired output format
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, out);
+
+			// Setup XSLT
+			TransformerFactory factory = TransformerFactory.newInstance();
+			Transformer transformer = factory.newTransformer(new StreamSource(xsltFile));
+
+			// Resulting SAX events (the generated FO) must be piped through to FOP
+			Result res = new SAXResult(fop.getDefaultHandler());
+
+			// Start XSLT transformation and FOP processing
+			// That's where the XML is first transformed to XSL-FO and then 
+			// PDF is created
+			transformer.transform(xmlSource, res);
+			fileXml.deleteOnExit();
+		} finally {
+			out.close();
 		}
-		return webView;
 	}
 
-	public String printCategory(ICategory category) {
-
-		return null;
-	}
-
-	public String getHead() {
-		String head = "";
+	private static String getHead() {
+		String head = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 
 		return head;
 	}
 
-	public String getBody() {
+	private static String getBody() {
 		String body = "";
-		body+="<body>\r\n"+
-				"<table style=\"width:100%\">\r\n";
+		body+="<categories>\r\n";
+		//		body+="<body>\r\n"+
+		//				"<table style=\"width:100%\">\r\n";
 		ICategory[] categories = CategoryControler.generateCategories();
 		for(ICategory category : categories) {
-			body += "		<tr>\r\n" + 
-					"			<th colspan=\"3\" style=\"text-align: left\">"+category.getName()+"</th>\r\n" + 
-					"		</tr>\r\n";
+			//			body += "		<tr>\r\n" + 
+			//					"			<th colspan=\"3\" style=\"text-align: left\">"+category.getName()+"</th>\r\n" + 
+			//					"		</tr>\r\n";
+			body+="<category>\r\n";
+			body+="<name>"+category.getName()+"</name>";
+			//			body+="<competiteurs>\r\n";
+			if(startOrderResult) {
+				category.sortByStartOrder();
+			}else {
+				category.sortByRunTime();
+			}
 			ICompetiteur[] competiteurs = category.getCompetiteurs();
 			int rang = 1;
 			for(ICompetiteur competiteur : competiteurs) {
 				body+= getCompetiteurResult(competiteur,rang)+"\r\n";
 				rang++;
 			}
-
+			//			body+="</competiteurs>\r\n";
+			body+="</category>\r\n";
 		}
-		body+="</table>\r\n"+
-				"</body>";
+		body+="</categories>";
+		//		body+="</table>\r\n"+
+		//				"</body>";
 		return body;
 	}
 
-	public String getCompetiteurResult(ICompetiteur competiteur,int rang) {
+	private static String getCompetiteurResult(ICompetiteur competiteur,int rang) {
 		String competiteurText = "";
-		competiteurText+="<tr>\r\n" + 
-				"			<td>"+rang+"</td>\r\n" + 
-				"			<td>"+competiteur.getStartOrder()+"\t"+competiteur.getName()+"</td>\r\n" + 
-				"			<td>"+competiteur.getStartTimeString()+"</td>\r\n" +
-				"		</tr>";
+		if(startOrderResult) {
+			competiteurText+="<competiteur>\r\n" + 
+					"			<rang>"+competiteur.getStartOrder()+"</rang>\r\n" + 
+					"			<start_order_name>"+competiteur.getName()+"</start_order_name>\r\n" + 
+					"			<result>"+competiteur.getStartTimeString()+"</result>\r\n" +
+					"		</competiteur>";
+		}else {
+			competiteurText+="<competiteur>\r\n" + 
+					"			<rang>"+rang+"</rang>\r\n" + 
+					"			<start_order_name>"+competiteur.getStartOrder()+"\t"+competiteur.getName()+"</start_order_name>\r\n" + 
+					"			<result>"+competiteur.getRunTimeString()+"</result>\r\n" +
+					"		</competiteur>";
+		}
+
 		return competiteurText;
 	}
-
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		Button btn = new Button();
-		btn.setText("Print");
-		WebView wb = new WebView();
-		WebEngine webEngine = wb.getEngine();
-		BorderPane borderPane = new BorderPane();
-		borderPane.setTop(btn);
-		borderPane.setCenter(wb);
-		Scene scene = new Scene(borderPane,125, 125);
-		btn.setOnAction(new EventHandler<ActionEvent>() {
-			
-			@Override
-			public void handle(ActionEvent event) {
-				WritableImage img = new WritableImage((int)scene.getWidth(),
-						(int)scene.getHeight());
-				scene.snapshot(img);
-
-				File file = new File("CanvasImage.png");
-
-				try {
-					ImageIO.write(SwingFXUtils.fromFXImage(img, null), "png", file);
-				}
-				catch (Exception s) {
-				}   
-			}
-		});
-		webEngine.loadContent(printResult());
-
-		primaryStage.setScene(scene);
-		primaryStage.show();
-
-	}
-
 }

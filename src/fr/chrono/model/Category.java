@@ -1,8 +1,11 @@
 package fr.chrono.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import fr.chrono.controlers.comparators.CompetiteurComparatorByRunTime;
+import fr.chrono.controlers.comparators.CompetiteurComparatorByStartOrder;
 import fr.chrono.model.interfaces.ICategory;
 import fr.chrono.model.interfaces.ICompetiteur;
 
@@ -44,6 +47,17 @@ public class Category implements ICategory{
 	@Override
 	public void removeAllCompetiteurs() {
 		this.competiteurs.clear();
+	}
+
+	@Override
+	public void sortByRunTime() {
+		Collections.sort(competiteurs,new CompetiteurComparatorByRunTime());
+	}
+
+	@Override
+	public void sortByStartOrder() {
+		Collections.sort(competiteurs,new CompetiteurComparatorByStartOrder());
+		
 	}
 
 }
