@@ -149,6 +149,7 @@ public class RunControler {
 							Thread.sleep(500);
 							Thread.yield();
 						} catch (InterruptedException e) {
+							//TODO remove error on stop run
 							e.printStackTrace();
 						}
 				    	ICompetiteur[] competiteurs = CompetiteurControler.getCompetiteurs();
