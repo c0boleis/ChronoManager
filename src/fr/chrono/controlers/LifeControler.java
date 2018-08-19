@@ -8,15 +8,17 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
+import fr.chrono.model.interfaces.DomainType;
+
 public class LifeControler {
 	
 	public static void main(String[] args) {
 		int portTest = 6785;
-		sendLifeStatus(portTest);
+		sendLifeStatus(portTest,DomainType.START.name());
 		AuxiliaireControler.listen(portTest);
 	}
 	
-	public static void sendLifeStatus(final int port) {
+	public static void sendLifeStatus(final int port,String id) {
 		try {
 			final DatagramSocket datagramSocket = new DatagramSocket();
 			InetAddress serveur = null;
@@ -25,7 +27,7 @@ public class LifeControler {
 			} catch (UnknownHostException e2) {
 				e2.printStackTrace();
 			}
-			String text = ConfigurationControler.domainType+"_LIFE";
+			String text = id+"_LIFE";
 			byte[] b = text.getBytes(StandardCharsets.UTF_8);
 			System.out.println(b.length);
 			final DatagramPacket packet = new DatagramPacket(b, b.length,serveur,port);

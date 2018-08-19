@@ -1,11 +1,10 @@
 package fr.chrono.ihm.panels;
 
 import fr.chrono.model.interfaces.IAuxiliare;
-import fr.chrono.model.interfaces.ICompetiteur;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
-public class PanelAuxiliaireStatus extends GridPane{;
+public class PanelAuxiliaireStatus extends GridPane{
 
 	private Label labelName;
 	
@@ -25,10 +24,13 @@ public class PanelAuxiliaireStatus extends GridPane{;
 
 	/**
 	 * @return the labelName
+	 * 
+	 * 
 	 */
 	private Label getLabelName() {
 		if(labelName == null) {
 			labelName = new Label();
+			labelName.setText(this.auxiliare.getDomainType().toString());
 		}
 		return labelName;
 	}

@@ -3,9 +3,13 @@ package fr.chrono.ihm;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.log4j.xml.DOMConfigurator;
+
 import fr.chrono.controlers.CompetiteurControler;
+import fr.chrono.controlers.ConfigurationControler;
 import fr.chrono.controlers.RunControler;
 import fr.chrono.controlers.listeners.RunListener;
+import fr.chrono.ihm.panels.PanelConfigurationInformation;
 import fr.chrono.ihm.panels.TabCompetiteurList;
 import fr.chrono.ihm.panels.TabRun;
 import fr.chrono.model.interfaces.ICompetiteur;
@@ -30,9 +34,13 @@ public class MainApplication extends Application{
 	
 	private TabRun tabRun;
 	
+	private PanelConfigurationInformation panelConfigurationInformation;
+	
 	private MainMenuBar mainMenuBar;
 	
 	private RunListener runListener;
+	
+	private BorderPane borderPane2;
 	
 	public  MainApplication() {
 		super();
@@ -40,9 +48,11 @@ public class MainApplication extends Application{
 	}
 	
 	public static void main(String[] args) {
+//		DOMConfigurator.configure("conf/loggerConfig.xml");
 		if(args.length>0) {
 			try {
 				CompetiteurControler.load(new File(args[0]));
+				ConfigurationControler.init();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -54,7 +64,7 @@ public class MainApplication extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		BorderPane borderPane = new BorderPane();
 		borderPane.setTop(getMainMenuBar());
-		borderPane.setCenter(getMainTabPane());
+		borderPane.setCenter(getBorderPane2());
 		Scene scene = new Scene(borderPane, 550,400);
 
 		primaryStage.setTitle("ChronoManager");
@@ -140,6 +150,22 @@ public class MainApplication extends Application{
 			};
 		}
 		return runListener;
+	}
+
+	public BorderPane getBorderPane2() {
+		if(borderPane2 == null) {
+			borderPane2 = new BorderPane();
+			borderPane2.setTop(getPanelConfigurationInformation());
+			borderPane2.setCenter(getMainTabPane());
+		}
+		return borderPane2;
+	}
+
+	public PanelConfigurationInformation getPanelConfigurationInformation() {
+		if(panelConfigurationInformation == null) {
+			panelConfigurationInformation = new PanelConfigurationInformation();
+		}
+		return panelConfigurationInformation;
 	}
 
 }

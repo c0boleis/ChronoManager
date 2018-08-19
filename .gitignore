@@ -4,6 +4,6 @@
 .project
 .classpath
 
-resources
+/resources/
 /target/
 /out/
