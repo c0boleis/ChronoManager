@@ -5,7 +5,14 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import fr.chrono.model.interfaces.DomainType;
+
 public class AuxiliaireControler {
+	
+	public static void main(String[] args) {
+		int portTest = 6785;
+		listen(portTest);
+	}
 	
 	public static void listen(final int port) {
 		final byte[] buffer = new byte[16];
