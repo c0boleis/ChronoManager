@@ -3,6 +3,10 @@
   <groupId>ChronoManager</groupId>
   <artifactId>fr.chrono</artifactId>
   <version>BETA-0.0.4</version>
+  <properties>
+    <sonar.organization>c0boleis</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  </properties>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>test</testSourceDirectory>
